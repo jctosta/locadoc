@@ -6,8 +6,7 @@ Docsets are downloaded once, stored under `$LOCADOC_HOME`, and searched with the
 
 ## Demo
 
-<!-- Replace <ID> below after uploading docs/demo.cast with `asciinema upload docs/demo.cast`. -->
-[![asciicast](https://asciinema.org/a/<ID>.svg)](https://asciinema.org/a/<ID>)
+[![asciicast](https://asciinema.org/a/30n5kUWu4IUf0tDt.svg)](https://asciinema.org/a/30n5kUWu4IUf0tDt)
 
 Prefer a local replay? The raw asciicast is checked in:
 
