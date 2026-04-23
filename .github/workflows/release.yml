@@ -17,7 +17,7 @@ jobs:
     name: Verify before release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ inputs.tag || github.ref }}
       - uses: oven-sh/setup-bun@v2
@@ -46,7 +46,7 @@ jobs:
           - target: bun-windows-x64
             output: locadoc-windows-x64.exe
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ inputs.tag || github.ref }}
 
@@ -60,7 +60,7 @@ jobs:
         run: bun build --compile --target=${{ matrix.target }} --outfile=${{ matrix.output }} src/cli.ts
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.output }}
           path: ${{ matrix.output }}
@@ -72,12 +72,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ inputs.tag || github.ref }}
 
       - name: Download all artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: dist
           merge-multiple: true
@@ -89,7 +89,7 @@ jobs:
           cat SHA256SUMS
 
       - name: Create release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ inputs.tag || github.ref_name }}
           files: |
