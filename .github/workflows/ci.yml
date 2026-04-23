@@ -38,3 +38,8 @@ jobs:
 
       - name: Smoke-run skill show (embedded asset)
         run: /tmp/locadoc-smoke skill show | head -3
+
+      - name: Smoke-test install.sh against latest release
+        run: |
+          PREFIX="$RUNNER_TEMP/locadoc-installer" bash install.sh
+          "$RUNNER_TEMP/locadoc-installer/locadoc" --version
