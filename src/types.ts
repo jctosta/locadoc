@@ -96,3 +96,26 @@ export const EXIT = {
   NETWORK: 3,
   STORAGE: 4,
 } as const;
+
+export type SkillScope = "global" | "project";
+
+export type SkillAction =
+  | "installed"
+  | "updated"
+  | "skipped"
+  | "removed"
+  | "absent"
+  | "dry-run";
+
+export interface SkillInstallResult {
+  scope: SkillScope;
+  path: string;
+  action: SkillAction;
+  bytes?: number;
+}
+
+export interface SkillWhereResult {
+  scope: SkillScope;
+  path: string;
+  exists: boolean;
+}

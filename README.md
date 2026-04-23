@@ -149,6 +149,30 @@ locadoc search 'promise.all' --json --limit 1 \
 - Schemas are stable — only additive changes within `0.x`.
 - No prompts, no spinners when piped.
 
+## Use with Claude Code
+
+locadoc ships with a [Claude Code skill](https://docs.claude.com/en/docs/claude-code/skills) that teaches the model when and how to reach for locadoc. Install it once and any future Claude Code session picks it up automatically:
+
+```sh
+locadoc skill install                # writes ~/.claude/skills/locadoc/SKILL.md
+locadoc skill install --project      # ./.claude/skills/locadoc/SKILL.md (this project only)
+locadoc skill install --force        # overwrite existing
+locadoc skill install --dry-run      # preview without writing
+locadoc skill where                  # print the target path
+locadoc skill show                   # dump the embedded SKILL.md
+locadoc skill uninstall              # remove it
+```
+
+The skill auto-triggers on API / library documentation questions (e.g. *"how does useEffect work"*, *"signature of Array.prototype.reduce"*) and includes `allowed-tools: Bash(locadoc:*)` so Claude doesn't need to ask for permission on every invocation.
+
+JSON schemas (stable within `0.x`):
+
+- `install` / `uninstall` / dry-run → `{ scope, path, action, bytes? }` where `action ∈ {installed, updated, skipped, removed, absent, dry-run}`.
+- `where` → `{ scope, path, exists }`.
+- `show` → raw SKILL.md to stdout (no wrapper).
+
+The SKILL.md content is embedded in the compiled binary via Bun's text-import — installing works offline and is version-locked to your locadoc binary. Update the skill by re-running `locadoc skill install --force` after upgrading.
+
 ## License and attribution
 
 locadoc is released under the [MIT License](./LICENSE), with one exception: `src/searcher.ts` is a TypeScript port of [devdocs.io](https://devdocs.io)'s `assets/javascripts/app/searcher.js` and remains under the Mozilla Public License 2.0 per MPL's file-level copyleft.

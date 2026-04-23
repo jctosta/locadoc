@@ -5,8 +5,9 @@ import { runLs } from "./commands/ls.ts";
 import { runRead } from "./commands/read.ts";
 import { runRemove } from "./commands/remove.ts";
 import { runSearch } from "./commands/search.ts";
+import { runSkill } from "./commands/skill.ts";
 import { runUpdate } from "./commands/update.ts";
-import type { RenderFormat } from "./types.ts";
+import type { RenderFormat, SkillScope } from "./types.ts";
 import { ansi } from "./output.ts";
 import { EXIT, type GlobalFlags } from "./types.ts";
 import { NetworkError } from "./devdocs.ts";
@@ -28,6 +29,8 @@ COMMANDS
                                    Search installed docsets
   read     <slug> <path>[#fragment] [--format md|ansi|html|raw]
                                    Render a documentation page
+  skill    install|uninstall|where|show [--global|--project] [--force] [--dry-run]
+                                   Manage the locadoc Claude Code skill
 
 GLOBAL FLAGS
   --json               Force JSON output
@@ -96,6 +99,7 @@ function needsValue(name: string): boolean {
     "type",
     "limit",
     "format",
+    "skills-root",
   ].includes(name);
 }
 
@@ -119,9 +123,13 @@ async function main(argv: string[]): Promise<number> {
     return EXIT.OK;
   }
   const helpRequested = !!p.options["help"] || !!p.options["h"];
-  if (!p.command || helpRequested) {
+  if (!p.command) {
     process.stdout.write(HELP);
     return helpRequested ? EXIT.OK : EXIT.USAGE;
+  }
+  if (helpRequested && p.command !== "skill") {
+    process.stdout.write(HELP);
+    return EXIT.OK;
   }
 
   const flags = globalFlags(p);
@@ -158,6 +166,26 @@ async function main(argv: string[]): Promise<number> {
                 ? p.options["type"]
                 : undefined,
             limit: typeof limit === "string" ? Number(limit) : undefined,
+          },
+          flags,
+        );
+      }
+      case "skill": {
+        const scopeFromFlags: SkillScope | undefined = p.options["project"]
+          ? "project"
+          : p.options["global"]
+            ? "global"
+            : undefined;
+        return await runSkill(
+          {
+            verb: p.positional[0],
+            scope: scopeFromFlags,
+            force: !!p.options["force"],
+            dryRun: !!p.options["dry-run"],
+            skillsRoot:
+              typeof p.options["skills-root"] === "string"
+                ? p.options["skills-root"]
+                : undefined,
           },
           flags,
         );
