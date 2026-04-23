@@ -24,6 +24,25 @@ bash scripts/demo.sh                     # run the demo live against your locado
 ## Install
 
 ```sh
+curl -fsSL https://raw.githubusercontent.com/jctosta/locadoc/main/install.sh | bash
+```
+
+Grabs the right prebuilt binary for your OS/arch from [GitHub Releases](https://github.com/jctosta/locadoc/releases), verifies its SHA-256, and drops `locadoc` into `~/.local/bin`. macOS and Linux (x64 and arm64) are supported.
+
+Env overrides:
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `PREFIX` | `$HOME/.local/bin` | install directory (e.g. `PREFIX=/usr/local/bin sudo bash install.sh`) |
+| `LOCADOC_VERSION` | `latest` | pin a specific release tag (e.g. `LOCADOC_VERSION=v0.1.0`) |
+
+If `$PREFIX` isn't on your `PATH`, the installer prints a one-liner to add to your shell rc.
+
+For Windows, download the binary directly from [the latest release](https://github.com/jctosta/locadoc/releases/latest).
+
+## Install from source
+
+```sh
 bun install
 bun link            # exposes `locadoc` as a global command
 ```
