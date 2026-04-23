@@ -35,3 +35,6 @@ jobs:
 
       - name: Smoke-run --version
         run: /tmp/locadoc-smoke --version
+
+      - name: Smoke-run skill show (embedded asset)
+        run: /tmp/locadoc-smoke skill show | head -3
