@@ -4,6 +4,18 @@ CLI for [devdocs.io](https://devdocs.io) content — search and read development
 
 Docsets are downloaded once, stored under `$LOCADOC_HOME`, and searched with the same scoring algorithm devdocs.io uses in-browser.
 
+## Demo
+
+[![asciicast](https://asciinema.org/a/30n5kUWu4IUf0tDt.svg)](https://asciinema.org/a/30n5kUWu4IUf0tDt)
+
+Prefer a local replay? The raw asciicast is checked in:
+
+```sh
+asciinema play docs/demo.cast           # replay at recorded speed
+asciinema play -s 2 docs/demo.cast      # 2× speed
+bash scripts/demo.sh                     # run the demo live against your locadoc install
+```
+
 > **AI-assisted project.** This codebase was designed and implemented collaboratively with an AI coding agent (Claude Code). The initial research, architecture decisions, and full implementation were produced in a single session from the prompt below. Review the source before depending on it in production.
 >
 > **Original prompt:**
