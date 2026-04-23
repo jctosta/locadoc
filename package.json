@@ -1,0 +1,29 @@
+{
+  "name": "locadoc",
+  "version": "0.1.0",
+  "description": "CLI for devdocs.io content — search and read docs from the terminal or automated workflows.",
+  "main": "src/cli.ts",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "locadoc": "./src/cli.ts"
+  },
+  "scripts": {
+    "locadoc": "bun run src/cli.ts",
+    "test": "bun test",
+    "typecheck": "bunx tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/tar": "^7.0.87",
+    "@types/turndown": "^5.0.6"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "node-html-parser": "^7.1.0",
+    "tar": "^7.5.13",
+    "turndown": "^7.2.4"
+  }
+}
