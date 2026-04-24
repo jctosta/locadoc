@@ -110,6 +110,23 @@ Delete docsets from disk and the registry.
 
 Search installed docsets. Scoring is a port of devdocs' `searcher.js`: exact substring first, then fuzzy regex for queries ≥ 3 chars. Without `--docset`, searches across every installed docset.
 
+### `locadoc self-update [--check|--force|--dry-run]`
+
+Replace the running binary with the latest GitHub release. Fetches the release asset for the current OS/arch, verifies it against `SHA256SUMS`, then atomically swaps the binary at `process.execPath`.
+
+- `--check` — print latest version, exit without installing. Works from source, too.
+- `--force` — reinstall even if already at the latest version.
+- `--dry-run` — show what would happen; no download, no replace.
+
+On Windows, the running `.exe` is renamed aside and the new binary moved into place. Close other `locadoc` processes first if the rename fails.
+
+Running from source (`bun run src/cli.ts self-update`) is refused — use `git pull && bun install` instead. `--check` and `--dry-run` still work from source.
+
+JSON schema:
+```ts
+{ currentVersion, latestVersion, action: "updated" | "no-op" | "available" | "dry-run" | "refused", path?, reason? }
+```
+
 ### `locadoc read <slug> <path>[#fragment] [--format md|ansi|html|raw]`
 
 Render a docset page. Paths come from `search` output. Fragments slice the HTML to a heading and its siblings.

@@ -5,6 +5,7 @@ import { runLs } from "./commands/ls.ts";
 import { runRead } from "./commands/read.ts";
 import { runRemove } from "./commands/remove.ts";
 import { runSearch } from "./commands/search.ts";
+import { runSelfUpdate } from "./commands/self-update.ts";
 import { runSkill } from "./commands/skill.ts";
 import { runUpdate } from "./commands/update.ts";
 import type { RenderFormat, SkillScope } from "./types.ts";
@@ -30,6 +31,8 @@ COMMANDS
                                    Render a documentation page
   skill    install|uninstall|where|show [--global|--project] [--force] [--dry-run]
                                    Manage the locadoc Claude Code skill
+  self-update [--check|--force|--dry-run]
+                                   Upgrade the locadoc binary from the latest release
 
 GLOBAL FLAGS
   --json               Force JSON output
@@ -189,6 +192,15 @@ async function main(argv: string[]): Promise<number> {
           flags,
         );
       }
+      case "self-update":
+        return await runSelfUpdate(
+          {
+            check: !!p.options["check"],
+            force: !!p.options["force"],
+            dryRun: !!p.options["dry-run"],
+          },
+          flags,
+        );
       case "read": {
         const [slug, path] = p.positional;
         if (!slug || !path) {
