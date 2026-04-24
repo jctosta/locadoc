@@ -11,8 +11,7 @@ import type { RenderFormat, SkillScope } from "./types.ts";
 import { ansi } from "./output.ts";
 import { EXIT, type GlobalFlags } from "./types.ts";
 import { NetworkError } from "./devdocs.ts";
-
-const VERSION = "0.1.0";
+import { VERSION } from "./version.ts";
 
 const HELP = `locadoc — CLI for devdocs.io content
 
