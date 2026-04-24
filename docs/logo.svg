@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none" stroke="#7cd992" stroke-linecap="round" stroke-linejoin="round" role="img" aria-label="locadoc — terminal prompt with documentation lines">
+  <!-- Prompt chevron -->
+  <path d="M30 36 L58 64 L30 92" stroke-width="8" />
+
+  <!-- Doc lines of varying length -->
+  <path d="M72 48 L104 48" stroke-width="5" />
+  <path d="M72 64 L110 64" stroke-width="5" />
+  <path d="M72 80 L94 80" stroke-width="5" />
+</svg>

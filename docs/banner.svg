@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 440 120" role="img" aria-label="locadoc">
+  <style>
+    .doc { stroke: #24292e; }
+    @media (prefers-color-scheme: dark) {
+      .doc { stroke: #eceff4; }
+    }
+  </style>
+
+  <!-- Glyph: terminal prompt + doc lines -->
+  <g transform="translate(8, 24) scale(0.6)" fill="none" stroke="#7cd992" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M30 36 L58 64 L30 92" stroke-width="8" />
+    <path d="M72 48 L104 48" stroke-width="5" />
+    <path d="M72 64 L110 64" stroke-width="5" />
+    <path d="M72 80 L94 80" stroke-width="5" />
+  </g>
+
+  <!-- Wordmark: monoline letters, baseline y=90, cap-top y=30, x-height y=55 -->
+  <g fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <!-- "loca" — green -->
+    <g stroke="#7cd992">
+      <!-- l — stylized: elongated foot tick (20u) gives the L an exaggerated ledge -->
+      <path d="M 115 30 L 115 90 L 135 90" />
+      <!-- o -->
+      <ellipse cx="169" cy="72" rx="15" ry="17" />
+      <!-- c — 3/4 arc, opening right -->
+      <path d="M 233 58 A 15 17 0 1 0 233 86" />
+      <!-- a — bowl + right stem (x-height to baseline) -->
+      <ellipse cx="267" cy="72" rx="15" ry="17" />
+      <path d="M 282 55 L 282 90" />
+    </g>
+
+    <!-- "doc" — dark in light mode, light in dark mode -->
+    <g class="doc">
+      <!-- d — bowl + right ascender stem (cap-height to baseline) -->
+      <ellipse cx="316" cy="72" rx="15" ry="17" />
+      <path d="M 331 30 L 331 90" />
+      <!-- o -->
+      <ellipse cx="365" cy="72" rx="15" ry="17" />
+      <!-- c -->
+      <path d="M 429 58 A 15 17 0 1 0 429 86" />
+    </g>
+  </g>
+</svg>
