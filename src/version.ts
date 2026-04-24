@@ -1,4 +1,4 @@
-export const VERSION = "0.1.0";
+export const VERSION = "0.2.0";
 
 export function normalizeTag(tag: string): string {
   return tag.startsWith("v") ? tag.slice(1) : tag;

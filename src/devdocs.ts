@@ -33,7 +33,7 @@ function docUrl(slug: string, file: string): string {
     : `https://documents.devdocs.io/${slug}/${file}`;
 }
 
-const UA = "locadoc/0.1 (+https://github.com/; devdocs CLI)";
+const UA = "locadoc/0.2 (+https://github.com/; devdocs CLI)";
 const MANIFEST_TTL_MS = 24 * 60 * 60 * 1000;
 
 export async function fetchManifest(
