@@ -1,18 +1,19 @@
 #!/usr/bin/env bun
 import { runDocs } from "./commands/docs.ts";
+import { runDoctor } from "./commands/doctor.ts";
 import { runDownload } from "./commands/download.ts";
 import { runLs } from "./commands/ls.ts";
 import { runRead } from "./commands/read.ts";
 import { runRemove } from "./commands/remove.ts";
 import { runSearch } from "./commands/search.ts";
+import { runSelfUpdate } from "./commands/self-update.ts";
 import { runSkill } from "./commands/skill.ts";
 import { runUpdate } from "./commands/update.ts";
 import type { RenderFormat, SkillScope } from "./types.ts";
 import { ansi } from "./output.ts";
 import { EXIT, type GlobalFlags } from "./types.ts";
 import { NetworkError } from "./devdocs.ts";
-
-const VERSION = "0.1.0";
+import { VERSION } from "./version.ts";
 
 const HELP = `locadoc — CLI for devdocs.io content
 
@@ -31,6 +32,9 @@ COMMANDS
                                    Render a documentation page
   skill    install|uninstall|where|show [--global|--project] [--force] [--dry-run]
                                    Manage the locadoc Claude Code skill
+  self-update [--check|--force|--dry-run]
+                                   Upgrade the locadoc binary from the latest release
+  doctor [--no-network]            Sanity-check the locadoc installation
 
 GLOBAL FLAGS
   --json               Force JSON output
@@ -190,6 +194,20 @@ async function main(argv: string[]): Promise<number> {
           flags,
         );
       }
+      case "self-update":
+        return await runSelfUpdate(
+          {
+            check: !!p.options["check"],
+            force: !!p.options["force"],
+            dryRun: !!p.options["dry-run"],
+          },
+          flags,
+        );
+      case "doctor":
+        return await runDoctor(
+          { noNetwork: !!p.options["no-network"] },
+          flags,
+        );
       case "read": {
         const [slug, path] = p.positional;
         if (!slug || !path) {

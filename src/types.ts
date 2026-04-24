@@ -95,6 +95,7 @@ export const EXIT = {
   USAGE: 2,
   NETWORK: 3,
   STORAGE: 4,
+  CHECK: 5,
 } as const;
 
 export type SkillScope = "global" | "project";
@@ -118,4 +119,36 @@ export interface SkillWhereResult {
   scope: SkillScope;
   path: string;
   exists: boolean;
+}
+
+export type SelfUpdateAction =
+  | "updated"
+  | "no-op"
+  | "available"
+  | "dry-run"
+  | "refused";
+
+export interface SelfUpdateResult {
+  currentVersion: string;
+  latestVersion: string;
+  action: SelfUpdateAction;
+  path?: string;
+  reason?: string;
+}
+
+export type DoctorStatus = "ok" | "warn" | "fail";
+
+export interface DoctorCheck {
+  name: string;
+  status: DoctorStatus;
+  detail: string;
+}
+
+export interface DoctorReport {
+  checks: DoctorCheck[];
+  summary: {
+    ok: number;
+    warn: number;
+    fail: number;
+  };
 }

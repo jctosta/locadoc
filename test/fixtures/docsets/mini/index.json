@@ -1,0 +1,12 @@
+{
+  "entries": [
+    { "name": "useEffect", "path": "hooks#useeffect", "type": "Hooks" },
+    { "name": "useState", "path": "hooks#usestate", "type": "Hooks" },
+    { "name": "greet", "path": "guide#greet", "type": "Guide" },
+    { "name": "farewell", "path": "guide#farewell", "type": "Guide" }
+  ],
+  "types": [
+    { "name": "Hooks", "count": 2, "slug": "hooks" },
+    { "name": "Guide", "count": 2, "slug": "guide" }
+  ]
+}

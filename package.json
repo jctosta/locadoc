@@ -1,6 +1,6 @@
 {
   "name": "locadoc",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "CLI for devdocs.io content — search and read docs from the terminal or automated workflows.",
   "main": "src/cli.ts",
   "type": "module",

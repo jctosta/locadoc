@@ -27,7 +27,7 @@ jobs:
       - name: Typecheck
         run: bunx tsc --noEmit
 
-      - name: Tests
+      - name: Unit and e2e tests
         run: bun test
 
       - name: Smoke-build the CLI binary

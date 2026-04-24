@@ -110,6 +110,43 @@ Delete docsets from disk and the registry.
 
 Search installed docsets. Scoring is a port of devdocs' `searcher.js`: exact substring first, then fuzzy regex for queries ≥ 3 chars. Without `--docset`, searches across every installed docset.
 
+### `locadoc self-update [--check|--force|--dry-run]`
+
+Replace the running binary with the latest GitHub release. Fetches the release asset for the current OS/arch, verifies it against `SHA256SUMS`, then atomically swaps the binary at `process.execPath`.
+
+- `--check` — print latest version, exit without installing. Works from source, too.
+- `--force` — reinstall even if already at the latest version.
+- `--dry-run` — show what would happen; no download, no replace.
+
+On Windows, the running `.exe` is renamed aside and the new binary moved into place. Close other `locadoc` processes first if the rename fails.
+
+Running from source (`bun run src/cli.ts self-update`) is refused — use `git pull && bun install` instead. `--check` and `--dry-run` still work from source.
+
+JSON schema:
+```ts
+{ currentVersion, latestVersion, action: "updated" | "no-op" | "available" | "dry-run" | "refused", path?, reason? }
+```
+
+### `locadoc doctor [--no-network]`
+
+Sanity-check the locadoc installation. Runs eight checks:
+
+- `home` — `$LOCADOC_HOME` exists and is writable
+- `manifest` — manifest cached, age under 24h
+- `database` — SQLite `PRAGMA integrity_check`
+- `docsets` — registry rows match the directories on disk
+- `binary` — `process.execPath` on `PATH`
+- `version` — whether a newer release is available (skip with `--no-network`)
+- `skill (global)` / `skill (project)` — Claude Code skill installation status
+
+JSON:
+```ts
+{ checks: { name, status: "ok" | "warn" | "fail", detail }[],
+  summary: { ok, warn, fail } }
+```
+
+Exit code `5` if any check is `fail`; `0` if only warnings or all ok.
+
 ### `locadoc read <slug> <path>[#fragment] [--format md|ansi|html|raw]`
 
 Render a docset page. Paths come from `search` output. Fragments slice the HTML to a heading and its siblings.
@@ -151,6 +188,7 @@ Stable shapes, safe to consume from scripts / LLM tool calls.
 | 2 | Usage error |
 | 3 | Network error |
 | 4 | Storage error |
+| 5 | Doctor check failed |
 
 ## Storage
 

@@ -10,13 +10,30 @@ import type {
   ManifestEntry,
 } from "./types.ts";
 
-const MANIFEST_URL = "https://devdocs.io/docs.json";
-const BUNDLE_URL = (slug: string) =>
-  `https://downloads.devdocs.io/${slug}.tar.gz`;
-const DOC_URL = (slug: string, file: string) =>
-  `https://documents.devdocs.io/${slug}/${file}`;
+function devdocsBase(): string | undefined {
+  return process.env.LOCADOC_DEVDOCS_BASE;
+}
 
-const UA = "locadoc/0.1 (+https://github.com/; devdocs CLI)";
+function manifestUrl(): string {
+  const base = devdocsBase();
+  return base ? `${base}/docs.json` : "https://devdocs.io/docs.json";
+}
+
+function bundleUrl(slug: string): string {
+  const base = devdocsBase();
+  return base
+    ? `${base}/downloads/${slug}.tar.gz`
+    : `https://downloads.devdocs.io/${slug}.tar.gz`;
+}
+
+function docUrl(slug: string, file: string): string {
+  const base = devdocsBase();
+  return base
+    ? `${base}/documents/${slug}/${file}`
+    : `https://documents.devdocs.io/${slug}/${file}`;
+}
+
+const UA = "locadoc/0.2 (+https://github.com/; devdocs CLI)";
 const MANIFEST_TTL_MS = 24 * 60 * 60 * 1000;
 
 export async function fetchManifest(
@@ -31,7 +48,7 @@ export async function fetchManifest(
       return JSON.parse(cached) as Manifest;
     }
   }
-  const res = await fetch(MANIFEST_URL, { headers: { "user-agent": UA } });
+  const res = await fetch(manifestUrl(), { headers: { "user-agent": UA } });
   if (!res.ok) {
     throw new NetworkError(
       `manifest fetch failed: ${res.status} ${res.statusText}`,
@@ -65,7 +82,7 @@ export async function downloadDocset(
 ): Promise<{ meta: DocsetMeta; index: DocsetIndex }> {
   await mkdir(destDir, { recursive: true });
   onProgress?.("fetching bundle");
-  const res = await fetch(BUNDLE_URL(slug), {
+  const res = await fetch(bundleUrl(slug), {
     headers: { "user-agent": UA },
   });
   if (res.ok && res.body) {
@@ -93,7 +110,7 @@ async function downloadIndividual(slug: string, destDir: string) {
   const files = ["index.json", "db.json", "meta.json"];
   await Promise.all(
     files.map(async (file) => {
-      const r = await fetch(DOC_URL(slug, file), {
+      const r = await fetch(docUrl(slug, file), {
         headers: { "user-agent": UA },
       });
       if (!r.ok) {
