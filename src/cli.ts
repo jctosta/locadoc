@@ -1,5 +1,6 @@
 #!/usr/bin/env bun
 import { runDocs } from "./commands/docs.ts";
+import { runDoctor } from "./commands/doctor.ts";
 import { runDownload } from "./commands/download.ts";
 import { runLs } from "./commands/ls.ts";
 import { runRead } from "./commands/read.ts";
@@ -33,6 +34,7 @@ COMMANDS
                                    Manage the locadoc Claude Code skill
   self-update [--check|--force|--dry-run]
                                    Upgrade the locadoc binary from the latest release
+  doctor [--no-network]            Sanity-check the locadoc installation
 
 GLOBAL FLAGS
   --json               Force JSON output
@@ -199,6 +201,11 @@ async function main(argv: string[]): Promise<number> {
             force: !!p.options["force"],
             dryRun: !!p.options["dry-run"],
           },
+          flags,
+        );
+      case "doctor":
+        return await runDoctor(
+          { noNetwork: !!p.options["no-network"] },
           flags,
         );
       case "read": {

@@ -127,6 +127,26 @@ JSON schema:
 { currentVersion, latestVersion, action: "updated" | "no-op" | "available" | "dry-run" | "refused", path?, reason? }
 ```
 
+### `locadoc doctor [--no-network]`
+
+Sanity-check the locadoc installation. Runs eight checks:
+
+- `home` — `$LOCADOC_HOME` exists and is writable
+- `manifest` — manifest cached, age under 24h
+- `database` — SQLite `PRAGMA integrity_check`
+- `docsets` — registry rows match the directories on disk
+- `binary` — `process.execPath` on `PATH`
+- `version` — whether a newer release is available (skip with `--no-network`)
+- `skill (global)` / `skill (project)` — Claude Code skill installation status
+
+JSON:
+```ts
+{ checks: { name, status: "ok" | "warn" | "fail", detail }[],
+  summary: { ok, warn, fail } }
+```
+
+Exit code `5` if any check is `fail`; `0` if only warnings or all ok.
+
 ### `locadoc read <slug> <path>[#fragment] [--format md|ansi|html|raw]`
 
 Render a docset page. Paths come from `search` output. Fragments slice the HTML to a heading and its siblings.
@@ -168,6 +188,7 @@ Stable shapes, safe to consume from scripts / LLM tool calls.
 | 2 | Usage error |
 | 3 | Network error |
 | 4 | Storage error |
+| 5 | Doctor check failed |
 
 ## Storage
 
