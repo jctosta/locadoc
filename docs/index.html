@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>locadoc — CLI for devdocs.io</title>
+<meta name="description" content="Search and read development documentation from the terminal or from automated workflows. Offline docsets, TTY-aware JSON, AI-tool-loop friendly." />
+
+<meta property="og:title" content="locadoc — CLI for devdocs.io" />
+<meta property="og:description" content="Search and read development documentation from the terminal or from automated workflows." />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://jctosta.github.io/locadoc/" />
+
+<link rel="icon" type="image/svg+xml" href="./logo.svg" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/asciinema-player@3.8.0/dist/bundle/asciinema-player.css" />
+
+<style>
+  :root {
+    --bg: #0b0f14;
+    --surface: #111820;
+    --surface-2: #0d1320;
+    --border: #1e2833;
+    --fg: #d8dee9;
+    --fg-strong: #eceff4;
+    --muted: #7a8796;
+    --accent: #7cd992;
+    --accent-dim: #4f9968;
+    --link: #8dbcff;
+    --code-bg: #0a1020;
+    --code-fg: #e5e9f0;
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--fg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  code, pre, .mono {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, "DejaVu Sans Mono", monospace;
+    font-size: 0.95em;
+  }
+
+  .wrap {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  header.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-bottom: 10px;
+    margin-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  header.brand .banner {
+    height: 48px;
+    width: auto;
+    flex-shrink: 0;
+  }
+  header.brand .tag {
+    color: var(--accent);
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 13px;
+  }
+  header.brand .right {
+    margin-left: auto;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  h2 {
+    font-size: 18px;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 48px 0 14px;
+    font-weight: 600;
+  }
+
+  p { margin: 0 0 14px; }
+  p.lede {
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--fg-strong);
+    margin-bottom: 26px;
+  }
+
+  .install {
+    position: relative;
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 56px 16px 18px;
+    margin: 18px 0 28px;
+    overflow-x: auto;
+  }
+  .install pre {
+    margin: 0;
+    color: var(--code-fg);
+    white-space: pre;
+  }
+  .install .prompt { color: var(--accent); user-select: none; }
+  .copy {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 120ms, border-color 120ms;
+  }
+  .copy:hover { color: var(--fg-strong); border-color: var(--muted); }
+  .copy.copied { color: var(--accent); border-color: var(--accent-dim); }
+
+  .player-wrap {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--code-bg);
+    margin: 0 0 8px;
+  }
+  .player-wrap .ap-wrapper { line-height: 0; }
+  .player-caption {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin: 0 0 32px;
+  }
+
+  ul.features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 18px;
+  }
+  ul.features li {
+    padding: 6px 0 6px 22px;
+    position: relative;
+  }
+  ul.features li::before {
+    content: "›";
+    position: absolute;
+    left: 4px;
+    color: var(--accent);
+  }
+
+  table.cmds {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0 0 10px;
+  }
+  table.cmds td {
+    padding: 6px 12px 6px 0;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  table.cmds tr:last-child td { border-bottom: none; }
+  table.cmds td.cmd {
+    width: 180px;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  table.cmds td.desc {
+    color: var(--fg);
+  }
+
+  .callout {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin: 8px 0 28px;
+  }
+  .callout .label {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .callout p { margin-bottom: 10px; }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout code {
+    background: var(--code-bg);
+    color: var(--code-fg);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+
+  footer {
+    margin-top: 64px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: center;
+  }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--fg-strong); }
+  footer .sep { color: var(--border); }
+
+  @media (max-width: 560px) {
+    .wrap { padding: 32px 18px 60px; }
+    header.brand { flex-wrap: wrap; }
+    header.brand .right { margin-left: 0; width: 100%; }
+    table.cmds td.cmd { width: 40%; }
+    .install { padding-right: 16px; padding-top: 44px; }
+    .copy { top: 8px; right: 8px; }
+  }
+</style>
+</head>
+<body>
+<main class="wrap">
+
+<header class="brand">
+  <svg class="banner" viewBox="0 0 440 120" role="img" aria-label="locadoc">
+    <!-- Glyph -->
+    <g transform="translate(8, 24) scale(0.6)" fill="none" stroke="#7cd992" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M30 36 L58 64 L30 92" stroke-width="8" />
+      <path d="M72 48 L104 48" stroke-width="5" />
+      <path d="M72 64 L110 64" stroke-width="5" />
+      <path d="M72 80 L94 80" stroke-width="5" />
+    </g>
+    <!-- Wordmark -->
+    <g fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+      <g stroke="#7cd992">
+        <path d="M 115 30 L 115 90 L 135 90" />
+        <ellipse cx="169" cy="72" rx="15" ry="17" />
+        <path d="M 233 58 A 15 17 0 1 0 233 86" />
+        <ellipse cx="267" cy="72" rx="15" ry="17" />
+        <path d="M 282 55 L 282 90" />
+      </g>
+      <g stroke="var(--fg-strong)">
+        <ellipse cx="316" cy="72" rx="15" ry="17" />
+        <path d="M 331 30 L 331 90" />
+        <ellipse cx="365" cy="72" rx="15" ry="17" />
+        <path d="M 429 58 A 15 17 0 1 0 429 86" />
+      </g>
+    </g>
+  </svg>
+  <span class="tag">v0.2.0</span>
+  <span class="right">
+    <a href="https://github.com/jctosta/locadoc">github ↗</a>
+  </span>
+</header>
+
+<p class="lede">
+  A CLI for <a href="https://devdocs.io">devdocs.io</a> content.
+  Search and read development documentation from the terminal or from automated
+  workflows — scripts, editor integrations, LLM tool-use loops.
+</p>
+
+<div class="install" id="install">
+  <button type="button" class="copy" id="copy-btn" aria-label="Copy install command">Copy</button>
+  <pre id="install-cmd"><span class="prompt">$</span> curl -fsSL https://raw.githubusercontent.com/jctosta/locadoc/main/install.sh | bash</pre>
+</div>
+
+<div class="player-wrap">
+  <div id="player"></div>
+</div>
+<p class="player-caption">
+  Demo: install, download docsets, search, read — end-to-end.
+</p>
+
+<h2>What it does</h2>
+
+<ul class="features">
+  <li>Offline docsets — downloaded once from <code>devdocs.io</code>, indexed into local SQLite.</li>
+  <li>TTY-aware output — pretty tables on a terminal, stable JSON when piped.</li>
+  <li>Fast search — direct port of the devdocs scoring algorithm, scoped or across every installed docset.</li>
+  <li>Markdown rendering — <code>read</code> emits ready-to-paste Markdown, fragment-sliceable by heading.</li>
+  <li>Single static binary — no Node runtime required on the host.</li>
+</ul>
+
+<h2>Commands</h2>
+
+<table class="cmds">
+  <tr><td class="cmd">locadoc docs</td><td class="desc">Fetch the manifest of available docsets.</td></tr>
+  <tr><td class="cmd">locadoc ls</td><td class="desc">List installed docsets (<code>--all</code> for the full manifest).</td></tr>
+  <tr><td class="cmd">locadoc download</td><td class="desc">Install one or more docsets.</td></tr>
+  <tr><td class="cmd">locadoc update</td><td class="desc">Re-download stale docsets.</td></tr>
+  <tr><td class="cmd">locadoc remove</td><td class="desc">Uninstall a docset.</td></tr>
+  <tr><td class="cmd">locadoc search</td><td class="desc">Query installed docsets.</td></tr>
+  <tr><td class="cmd">locadoc read</td><td class="desc">Render a page as Markdown, ANSI, or HTML.</td></tr>
+  <tr><td class="cmd">locadoc skill</td><td class="desc">Manage the Claude Code skill integration.</td></tr>
+  <tr><td class="cmd">locadoc self-update</td><td class="desc">Upgrade the binary from the latest release.</td></tr>
+  <tr><td class="cmd">locadoc doctor</td><td class="desc">Sanity-check the installation.</td></tr>
+</table>
+
+<h2>Use with Claude Code</h2>
+
+<div class="callout">
+  <span class="label">Skill integration</span>
+  <p>
+    locadoc ships with a <a href="https://docs.claude.com/en/docs/claude-code/skills">Claude Code skill</a>
+    that teaches the model when and how to use it. Install it once and any future
+    Claude Code session picks it up automatically.
+  </p>
+  <p><code>locadoc skill install</code></p>
+  <p>
+    The skill auto-triggers on API / library documentation questions and includes
+    <code>allowed-tools: Bash(locadoc:*)</code>, so Claude doesn't need to ask for
+    permission on every invocation.
+  </p>
+</div>
+
+<h2>AI / automation</h2>
+
+<p>
+  Schemas are stable within 0.x — safe to consume from scripts and LLM tool calls.
+</p>
+
+<div class="install">
+<pre><span class="prompt">$</span> locadoc search 'promise.all' --json --limit 1 \
+    | jq -r '.[0] | "\(.docset) \(.path)"' \
+    | xargs -n2 locadoc read --json \
+    | jq -r '.markdown'</pre>
+</div>
+
+<p style="margin-top: 18px;">
+  See the <a href="https://github.com/jctosta/locadoc#json-schemas">JSON schemas</a> and
+  <a href="https://github.com/jctosta/locadoc#exit-codes">exit codes</a> in the README.
+</p>
+
+<footer>
+  <span>locadoc — MIT</span>
+  <span class="sep">·</span>
+  <span>searcher.ts — MPL-2.0 (from devdocs.io)</span>
+  <span class="sep">·</span>
+  <a href="https://github.com/jctosta/locadoc">source</a>
+  <span class="sep">·</span>
+  <a href="https://github.com/jctosta/locadoc/releases">releases</a>
+  <span class="sep">·</span>
+  <a href="https://devdocs.io">devdocs.io</a>
+</footer>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/asciinema-player@3.8.0/dist/bundle/asciinema-player.min.js"></script>
+<script>
+  (function () {
+    if (window.AsciinemaPlayer) {
+      AsciinemaPlayer.create(
+        "https://asciinema.org/a/30n5kUWu4IUf0tDt.cast",
+        document.getElementById("player"),
+        {
+          autoPlay: false,
+          loop: false,
+          theme: "asciinema",
+          fit: "width",
+          terminalFontFamily: "ui-monospace, 'SF Mono', Menlo, Consolas, monospace",
+          terminalFontSize: "13px",
+        },
+      );
+    }
+
+    var btn = document.getElementById("copy-btn");
+    var cmd = document.getElementById("install-cmd");
+    if (btn && cmd && navigator.clipboard) {
+      btn.addEventListener("click", function () {
+        var text = cmd.textContent.replace(/^\$\s*/, "");
+        navigator.clipboard.writeText(text).then(function () {
+          btn.textContent = "Copied";
+          btn.classList.add("copied");
+          setTimeout(function () {
+            btn.textContent = "Copy";
+            btn.classList.remove("copied");
+          }, 1500);
+        });
+      });
+    }
+  })();
+</script>
+</body>
+</html>

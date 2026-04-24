@@ -1,4 +1,6 @@
-# locadoc
+<p align="center">
+  <img src="docs/banner.svg" alt="locadoc" width="440">
+</p>
 
 CLI for [devdocs.io](https://devdocs.io) content — search and read development documentation from the terminal or from automated workflows (scripts, LLM tool-use loops, editor integrations).
 
