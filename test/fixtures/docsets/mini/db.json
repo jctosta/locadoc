@@ -1,0 +1,4 @@
+{
+  "hooks": "<h1>Hooks</h1><h2 id=\"useeffect\">useEffect</h2><p>Run side effects after render. Call <code>useEffect(fn, deps)</code>.</p><h2 id=\"usestate\">useState</h2><p>Declare state. Returns <code>[value, setValue]</code>.</p>",
+  "guide": "<h1>Guide</h1><h2 id=\"greet\">greet</h2><p>Say hello to someone.</p><h2 id=\"farewell\">farewell</h2><p>Wave goodbye.</p>"
+}
